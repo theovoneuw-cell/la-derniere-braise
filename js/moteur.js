@@ -18,8 +18,8 @@
     return { noms, chap: 0, main: [], defausse: [], flags: {}, ombreAutres: 0, temps: 0, anneauMs: 0, tambourMs: 0, tirages: 0,
       indices: {}, lieu: null, dedale: { salle: "R0", prec: null, vues: ["R0"] }, anneau: false, tambours: false, etape: "jeu", nouv: [] };
   }
-  const sauver = () => { try { localStorage.setItem(CLE_SAUVE, JSON.stringify(S)); } catch (e) {} };
-  const charger = () => { try { return JSON.parse(localStorage.getItem(CLE_SAUVE)); } catch (e) { return null; } };
+  const sauver = () => { if (!S) return; try { localStorage.setItem(CLE_SAUVE, JSON.stringify(S)); localStorage.setItem(CLE_SAUVE + "-secours", JSON.stringify(S)); } catch (e) {} };
+  const charger = () => { try { return JSON.parse(localStorage.getItem(CLE_SAUVE)) || JSON.parse(localStorage.getItem(CLE_SAUVE + "-secours")); } catch (e) { return null; } };
 
   const ombre = () => Math.min(J.ombreMax, Math.floor(S.temps / (J.ombreParMinutes * 60000)) + S.ombreAutres);
   const chap = () => J.chapitres[S.chap];
@@ -183,7 +183,14 @@
   }
 
   // ——— Entrée à la Table
+  function reparer() {
+    S.defausse.filter(n => carte(n).garde && !enMain(n)).forEach(n => {
+      const utile = { 81: () => S.chap === 2 && !S.flags.portevue };
+      if (utile[n] && utile[n]()) { S.defausse = S.defausse.filter(x => x !== n); S.main.push(n); }
+    });
+  }
   function entrerTable() {
+    reparer();
     ecran("table");
     const c = chap();
     $("#chap-nom").textContent = c.nom; $("#chap-titre").textContent = c.titre;
@@ -369,6 +376,7 @@
 
   // ——— Assembler deux cartes
   function assembler(a, b) {
+    if (!enMain(a) || !enMain(b)) return false;
     const c = J.combos.find(x => (x.a === a && x.b === b) || (x.a === b && x.b === a));
     if (c) {
       if (c.unique && S.flags[c.unique]) { if (c.a === 0 || c.b === 0) ouvrirCarte(99); else toast("C'est déjà fait."); return; }
@@ -470,7 +478,7 @@
   $("#b-menu").onclick = () => { pause(); const m = Math.floor(S.temps / 60000); $("#menu-temps").textContent = `Temps de voyage : ${Math.floor(m / 60) ? Math.floor(m / 60) + " h " : ""}${m % 60} min. L'Ombre : ${ombre()} sur ${J.ombreMax}.`; $("#menu-url").textContent = URL_CARNET; $("#m-menu").hidden = false; };
   $("#b-son").onclick = () => { const c = !Son.coupe; Son.couper(c); document.body.classList.toggle("muet", c); };
   $("#vol-mus").oninput = e => Son.volumeMusique(+e.target.value);
-  $("#b-recommencer").onclick = () => { if (!confirm("Effacer la partie en cours et recommencer ?")) return; localStorage.removeItem(CLE_SAUVE); location.reload(); };
+  $("#b-recommencer").onclick = () => { if (!confirm("Effacer la partie en cours et recommencer ?")) return; localStorage.removeItem(CLE_SAUVE); localStorage.removeItem(CLE_SAUVE + "-secours"); location.reload(); };
 
   // ——— La finale
   function finale() {
