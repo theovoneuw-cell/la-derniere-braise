@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Carnet de Mirabelle</title>
+<meta name="theme-color" content="#2a1d12">
+<link rel="icon" href="../img/icone.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="carnet.css">
+</head>
+<body>
+<div class="couverture" id="couverture">
+  <div class="couv-cuir">
+    <div class="couv-cadre">
+      <p class="couv-petit">Carnet de route</p>
+      <p class="couv-nom">M. S.-C.</p>
+      <div class="couv-fermoir"></div>
+    </div>
+  </div>
+  <button class="couv-ouvrir" id="ouvrir">Ouvrir le carnet</button>
+  <p class="couv-aide">Celui qui lit garde ce téléphone pour lui. Il ne montre jamais ces pages : il les lit, il les décrit.</p>
+</div>
+
+<div class="livre" id="livre" hidden>
+  <nav class="onglets" id="onglets"></nav>
+  <main class="page-zone" id="page-zone">
+    <article class="page" id="page"></article>
+  </main>
+  <footer class="pied">
+    <button class="tourne" id="prec" aria-label="Page précédente">‹</button>
+    <span class="folio" id="folio"></span>
+    <button class="tourne" id="suiv" aria-label="Page suivante">›</button>
+  </footer>
+</div>
+
+<script src="../js/glyphes.js"></script>
+<script src="donnees.js"></script>
+<script src="carnet.js"></script>
+</body>
+</html>

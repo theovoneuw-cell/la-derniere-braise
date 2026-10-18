@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Dernière Braise</title>
+<meta name="description" content="Un escape game de table pour deux voyageurs de la Comté.">
+<meta name="theme-color" content="#120d09">
+<link rel="icon" href="img/icone.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/table.css">
+</head>
+<body class="sur-titre">
+
+<!-- Filtres SVG : bords de papier déchirés, encre qui bave -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="bord-papier"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="3"/><feDisplacementMap in="SourceGraphic" scale="6"/></filter>
+  <filter id="encre"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="8"/><feDisplacementMap in="SourceGraphic" scale="1.4"/></filter>
+  <filter id="trait-main"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="5"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+</svg>
+
+<!-- ——— Titre -->
+<section id="titre" class="ecran actif">
+  <div class="titre-fond"></div>
+  <div class="titre-voile"></div>
+  <div class="titre-contenu">
+    <p class="titre-sur">Un escape game de table pour deux voyageurs</p>
+    <h1 class="titre-nom">La Dernière Braise</h1>
+    <p class="titre-sous">Deux joueurs · un écran pour chercher, un téléphone pour lire · environ une heure et demie</p>
+    <div class="titre-actions">
+      <button class="btn btn-principal" id="b-nouvelle">Commencer le voyage</button>
+      <button class="btn" id="b-reprendre" hidden>Reprendre la partie</button>
+    </div>
+    <p class="titre-casque">Jouez avec le son. Dans le noir, si vous pouvez.</p>
+  </div>
+</section>
+
+<!-- ——— Préparatifs -->
+<section id="prepa" class="ecran">
+  <div class="prepa-boite">
+    <div class="prepa-etape" data-etape="1">
+      <h2>Qui part ?</h2>
+      <p class="prepa-texte">Votre grand-tante a laissé une consigne : <i>un pour lire, un pour chercher.</i></p>
+      <div class="prepa-roles">
+        <label class="role">
+          <span class="role-nom">Celui qui cherche</span>
+          <span class="role-desc">Garde cet écran : la maison, les cartes, les objets, les mécanismes.</span>
+          <input id="nom-a" maxlength="18" placeholder="Son prénom" autocomplete="off">
+        </label>
+        <label class="role">
+          <span class="role-nom">Celui qui lit</span>
+          <span class="role-desc">Prend son téléphone : le carnet de la tante. Il ne montre pas ses pages, il les raconte.</span>
+          <input id="nom-b" maxlength="18" placeholder="Son prénom" autocomplete="off">
+        </label>
+      </div>
+      <button class="btn btn-principal" id="b-noms">Suivant</button>
+    </div>
+    <div class="prepa-etape" data-etape="2" hidden>
+      <h2>Le carnet</h2>
+      <p class="prepa-texte">Celui qui lit ouvre le carnet sur son téléphone. Il ne doit jamais montrer l'écran du carnet à celui qui cherche, ni regarder la Table : tout passe par la parole.</p>
+      <div class="prepa-qr">
+        <div id="qr"></div>
+        <div>
+          <p class="prepa-url" id="url-carnet"></p>
+          <p class="prepa-petit">Pas de second appareil ? <a href="carnet/" target="_blank" rel="noopener">Ouvrir le carnet dans une autre fenêtre</a>, et que celui qui cherche détourne les yeux.</p>
+        </div>
+      </div>
+      <button class="btn btn-principal" id="b-carnet">Le carnet est ouvert</button>
+    </div>
+    <div class="prepa-etape" data-etape="3" hidden>
+      <h2>Comment on joue</h2>
+      <div class="regles">
+        <div class="regle"><span class="regle-num">12</span><p><b>Les nombres cachés.</b> Les images des lieux cachent des nombres, dessinés dans le décor. Chacun est une carte : tapez son numéro dans <i>Piocher</i> pour la prendre en main. Fouiller au hasard fait perdre du temps.</p></div>
+        <div class="regle"><span class="regle-num">+</span><p><b>Assembler.</b> Faites glisser une carte sur une autre (ou sur l'image du lieu) pour les utiliser ensemble. Une association absurde fait perdre du temps.</p></div>
+        <div class="regle"><span class="regle-num">⚙</span><p><b>Les mécanismes.</b> Certaines cartes se manipulent : serrures, roues, cordes, runes. Touchez une carte pour l'ouvrir.</p></div>
+        <div class="regle"><span class="regle-num regle-ombre"></span><p><b>L'Ombre.</b> En haut de l'écran, elle avance avec le temps et à chaque erreur. Vous n'êtes jamais bloqués, mais votre fin en dépend.</p></div>
+        <div class="regle"><span class="regle-num">?</span><p><b>Conseil.</b> Coincés ? Le bouton <i>Conseil</i> donne trois indices par énigme, du plus discret à la solution. Chacun coûte une case d'Ombre.</p></div>
+      </div>
+      <button class="btn btn-principal" id="b-partir">Pousser la porte ronde</button>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Cinématique (récit) -->
+<section id="cine" class="ecran" aria-live="polite">
+  <div class="cine-fond"></div>
+  <div class="cine-texte" id="cine-texte"></div>
+  <button class="cine-suite" id="cine-suite">Continuer</button>
+</section>
+
+<!-- ——— La Table -->
+<section id="table" class="ecran">
+  <header class="barre-haut">
+    <div class="chapitre"><span id="chap-nom"></span><span id="chap-titre"></span></div>
+    <div class="ombre" id="ombre" title="L'Ombre"><div class="ombre-cases" id="ombre-cases"></div><span class="ombre-nom">L'Ombre</span></div>
+    <div class="haut-actions">
+      <button class="icone" id="b-son" title="Couper le son" aria-label="Couper le son"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="ondes" d="M16 8.5c1.2 1 1.8 2.2 1.8 3.5s-.6 2.5-1.8 3.5M18.5 6c2 1.6 3 3.6 3 6s-1 4.4-3 6"/></svg></button>
+      <button class="icone" id="b-menu" title="Menu" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </header>
+
+  <main class="plan">
+    <div class="scene" id="scene">
+      <div class="scene-cadre" id="scene-cadre">
+        <img class="scene-img" id="scene-img" alt="">
+        <div class="scene-calques" id="scene-calques"></div>
+        <div class="scene-noir" id="scene-noir"></div>
+      </div>
+      <div class="scene-legende">
+        <h2 id="scene-titre"></h2>
+        <p id="scene-texte"></p>
+        <div class="scene-actions" id="scene-actions"></div>
+      </div>
+    </div>
+    <aside class="main-joueur">
+      <div class="main-titre">Sur la table</div>
+      <div class="cartes" id="cartes"></div>
+    </aside>
+  </main>
+
+  <footer class="barre-bas">
+    <form class="pioche" id="pioche" autocomplete="off">
+      <label for="pioche-n">Piocher</label>
+      <input id="pioche-n" inputmode="numeric" pattern="[0-9]*" maxlength="2" placeholder="nº">
+      <button class="btn btn-petit" type="submit">Prendre</button>
+    </form>
+    <div class="bas-centre" id="bas-centre"></div>
+    <div class="bas-actions">
+      <button class="btn btn-anneau" id="b-anneau" hidden><span class="anneau-rond"></span><span id="anneau-libelle">Passer l'anneau</span></button>
+      <button class="btn" id="b-plateau">La carte</button>
+      <button class="btn" id="b-conseil">Conseil</button>
+    </div>
+  </footer>
+  <div class="voile-ombre" id="voile-ombre"></div>
+  <div class="voile-anneau" id="voile-anneau"></div>
+  <div class="poussiere" id="poussiere"></div>
+</section>
+
+<!-- ——— Carte ouverte -->
+<div class="modale" id="m-carte" hidden>
+  <div class="modale-fond" data-fermer></div>
+  <article class="carte-grande" id="carte-grande"></article>
+</div>
+
+<!-- ——— Billet de récit (après une action) -->
+<div class="modale" id="m-billet" hidden>
+  <div class="modale-fond"></div>
+  <div class="billet"><div class="billet-texte" id="billet-texte"></div><button class="btn btn-principal" id="billet-ok">Continuer</button></div>
+</div>
+
+<!-- ——— Conseil -->
+<div class="modale" id="m-conseil" hidden>
+  <div class="modale-fond" data-fermer></div>
+  <div class="panneau">
+    <h2>Conseil</h2>
+    <p class="panneau-sous">Chaque indice dévoilé coûte une case d'Ombre.</p>
+    <div id="conseil-liste"></div>
+    <button class="btn" data-fermer>Fermer</button>
+  </div>
+</div>
+
+<!-- ——— Menu -->
+<div class="modale" id="m-menu" hidden>
+  <div class="modale-fond" data-fermer></div>
+  <div class="panneau">
+    <h2>Pause</h2>
+    <p class="panneau-sous" id="menu-temps"></p>
+    <label class="reglage">Musique <input type="range" id="vol-mus" min="0" max="1" step="0.05" value="0.55"></label>
+    <p class="panneau-sous">Adresse du carnet : <span id="menu-url"></span></p>
+    <div class="menu-actions">
+      <button class="btn" data-fermer>Reprendre</button>
+      <button class="btn btn-danger" id="b-recommencer">Recommencer depuis le début</button>
+    </div>
+  </div>
+</div>
+
+<!-- ——— Le plateau : la carte du voyage -->
+<section id="plateau" class="ecran-dessus" hidden>
+  <div class="plateau-carte" id="plateau-carte"></div>
+  <div class="plateau-legende" id="plateau-legende"></div>
+  <button class="btn plateau-fermer" id="plateau-fermer">Revenir à la table</button>
+</section>
+
+<!-- ——— Fin -->
+<section id="fin" class="ecran">
+  <div class="fin-boite">
+    <p class="fin-sur" id="fin-sur"></p>
+    <h2 id="fin-titre"></h2>
+    <div id="fin-texte"></div>
+    <dl class="fin-bilan" id="fin-bilan"></dl>
+    <p class="fin-carnet" id="fin-carnet"></p>
+    <button class="btn" id="b-rejouer">Revenir au titre</button>
+    <p class="fin-credits">Un jeu de fan, sans but commercial, librement inspiré de l'œuvre de J.R.R. Tolkien. Sons d'ambiance : Freesound (licence CC0).</p>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="js/glyphes.js"></script>
+<script src="js/donnees.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/plateau.js"></script>
+<script src="js/mecas.js"></script>
+<script src="js/moteur.js"></script>
+</body>
+</html>
