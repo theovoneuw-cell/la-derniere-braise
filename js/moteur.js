@@ -227,7 +227,7 @@
   };
   function imageCarte(n) {
     const c = carte(n);
-    if (n === 34) return "data:image/svg+xml;utf8," + encodeURIComponent(Plateau.carteRevelee()).replace(/'/g, "%27").replace(/\(/g, "%28").replace(/\)/g, "%29");
+    if (n === 34) return "plan";
     if (n === 50) return "img/c-lanterne.jpg";
     return c.image ? `img/${c.image}.jpg` : null;
   }
@@ -238,7 +238,7 @@
     el.style.setProperty("--rot", (((n * 37) % 7) - 3) * .5 + "deg");
     const img = imageCarte(n);
     el.innerHTML = `<span class="c-num">${n}</span><span class="c-type">${ICONES[c.type] || ""}</span>` +
-      (img ? `<div class="c-img" style="background-image:url('${img}')"></div>` : `<div class="c-img vide">${DESSIN_VIDE[c.type]}</div>`) +
+      (img === "plan" ? `<div class="c-img c-plan">${Plateau.carteRevelee()}</div>` : img ? `<div class="c-img" style="background-image:url('${img}')"></div>` : `<div class="c-img vide">${DESSIN_VIDE[c.type]}</div>`) +
       `<div class="c-titre">${c.titre}</div>`;
     glisser(el, n);
     return el;
@@ -409,7 +409,7 @@
     const avecVisuel = !!img;
     el.className = "carte-grande" + (avecVisuel ? "" : " sans-visuel") + (n === 34 ? " plan" : "");
     const alt = !!c.texteAnneau;
-    el.innerHTML = (avecVisuel ? `<div class="cg-visuel"><span class="cg-num">${n}</span><div class="cg-img" style="background-image:url('${img}')"></div></div>` : "") +
+    el.innerHTML = (avecVisuel ? `<div class="cg-visuel"><span class="cg-num">${n}</span>${img === "plan" ? `<div class="cg-img cg-plan">${Plateau.carteRevelee()}</div>` : `<div class="cg-img" style="background-image:url('${img}')"></div>`}</div>` : "") +
       `<div class="cg-corps">${avecVisuel ? "" : `<span class="cg-num">${n}</span>`}<h2>${c.titre}</h2>
       <div class="cg-texte cg-sans-anneau ${alt ? "a-alt" : ""}">${noms(c.texte)}</div>
       ${alt ? `<div class="cg-texte cg-anneau">${noms(c.texteAnneau)}</div>` : ""}

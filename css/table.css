@@ -362,3 +362,7 @@ body.anneau .dedale-arche.bonne .pas-fantome { opacity: .9; }
 .carte-grande.plan .cg-img { aspect-ratio: 16 / 10; background-size: contain; background-repeat: no-repeat; mix-blend-mode: normal; filter: none; }
 
 .arche-argent { position: absolute; left: 16.5%; top: 60%; width: 9%; transform: translate(-50%, -50%); filter: drop-shadow(0 0 6px rgba(210, 225, 255, .9)); animation: apparait 3s; pointer-events: none; }
+
+.cg-plan, .c-plan { mix-blend-mode: normal !important; filter: none !important; }
+.cg-plan svg, .c-plan svg { width: 100%; height: 100%; display: block; }
+.carte .c-plan { background: #e6d3aa; }
