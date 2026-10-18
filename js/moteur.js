@@ -227,7 +227,7 @@
   };
   function imageCarte(n) {
     const c = carte(n);
-    if (n === 34) return "data:image/svg+xml;utf8," + encodeURIComponent(Plateau.carteRevelee());
+    if (n === 34) return "data:image/svg+xml;utf8," + encodeURIComponent(Plateau.carteRevelee()).replace(/'/g, "%27").replace(/\(/g, "%28").replace(/\)/g, "%29");
     if (n === 50) return "img/c-lanterne.jpg";
     return c.image ? `img/${c.image}.jpg` : null;
   }
