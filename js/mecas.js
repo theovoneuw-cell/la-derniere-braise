@@ -140,19 +140,19 @@
     let groupes = [], dernier = 0, t;
     porte.addEventListener("pointerdown", () => {
       const now = performance.now(); ctx.Son.frappe(); porte.classList.remove("coup"); void porte.offsetWidth; porte.classList.add("coup");
-      if (!groupes.length || now - dernier > 650) groupes.push(1); else groupes[groupes.length - 1]++;
+      if (!groupes.length || now - dernier > 900) groupes.push(1); else groupes[groupes.length - 1]++;
       dernier = now; coups.textContent = groupes.map(n => "●".repeat(n).split("").join(" ")).join("   ");
       clearTimeout(t); t = setTimeout(() => {
         if (groupes.join() === m.motif.join()) ctx.effets(m.effets);
         else { ctx.toast("La porte reste muette."); coups.textContent = ""; }
         groupes = [];
-      }, 1700);
+      }, 2200);
     });
   }
 
   // ——— Falaise (frapper la roche avec la pierre d'écoute)
   function falaise(m, zone, ctx) {
-    const cadre = h(`<div style="position:relative;aspect-ratio:16/9;background:#222 url(img/s-falaise.jpg) center/cover;border-radius:3px;overflow:hidden"></div>`);
+    const cadre = h(`<div style="position:relative;aspect-ratio:16/9;width:min(100%, calc(52vh * 16 / 9));margin:0 auto;background:#222 url(img/s-falaise.jpg) center/cover;border-radius:3px;overflow:hidden"></div>`);
     const grille = h(`<div class="falaise-grille"></div>`); cadre.appendChild(grille);
     let derniere = null;
     for (let i = 1; i <= m.zones; i++) {
@@ -205,7 +205,7 @@
     let etoiles = "";
     for (let i = 0; i < 700; i++) { const x = al() * W, y = Math.pow(al(), 1.3) * (HT - 60); const r = al() < .93 ? al() * .9 + .3 : al() * 1.2 + 1; etoiles += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}" fill="#fff" opacity="${(.35 + al() * .6).toFixed(2)}"/>`; }
     // la Voie, voile laiteux
-    const voie = `<path d="M0 ${el(40)} C 900 ${el(60)}, 1800 ${el(10)}, 2700 ${el(30)} S 3600 ${el(40)}, 3600 ${el(40)}" stroke="#cbd6ff" stroke-opacity=".07" stroke-width="70" fill="none"/>`;
+    const voie = `<path d="M0 ${el(40)} C 900 ${el(60)}, 1800 ${el(10)}, 2700 ${el(30)} S 3600 ${el(40)}, 3600 ${el(40)}" stroke="#cbd6ff" stroke-opacity=".09" stroke-width="80" fill="none" filter="url(#voie-flou)"/>`;
     // constellations (coordonnées : azimut, élévation)
     const brillantes = [];
     const P = [0, 50]; brillantes.push(P);
@@ -228,7 +228,7 @@
       sapin: `<g fill="#020304"><path d="M${x} ${b - 170} L ${x + 34} ${b} L ${x - 34} ${b} Z"/></g>`
     })[k]; }).join("");
     const contenu = `<rect width="${W}" height="${HT}" fill="url(#cielgrad)"/>${voie}${etoiles}${br}${amers}${cimes}`;
-    const svg = h(`<svg viewBox="0 0 ${W * 2} ${HT}" width="${W * 2}" height="${HT}"><defs><linearGradient id="cielgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#03050b"/><stop offset=".8" stop-color="#0b1424"/><stop offset="1" stop-color="#1a2234"/></linearGradient></defs><g>${contenu}</g><g transform="translate(${W} 0)">${contenu}</g></svg>`);
+    const svg = h(`<svg viewBox="0 0 ${W * 2} ${HT}" width="${W * 2}" height="${HT}"><defs><filter id="voie-flou" x="-5%" y="-50%" width="110%" height="200%"><feGaussianBlur stdDeviation="22"/></filter><linearGradient id="cielgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#03050b"/><stop offset=".8" stop-color="#0b1424"/><stop offset="1" stop-color="#1a2234"/></linearGradient></defs><g>${contenu}</g><g transform="translate(${W} 0)">${contenu}</g></svg>`);
     const vue = h(`<div class="ciel-vue"></div>`); vue.appendChild(svg);
     zone.append(vue, h(`<p class="ciel-aide">Faites glisser le ciel pour tourner sur vous-même.</p>`));
     let decal = -(200 * PX) + 300, x0 = null, d0 = 0;
@@ -290,7 +290,7 @@
   function finale(J, S, ctx) {
     const v = h(`<div class="finale" style="position:fixed;inset:0;z-index:25;background:#0a0503 url(img/s-couche.jpg) center/cover;cursor:default;touch-action:none;overflow:hidden">
       <div class="finale-voile" style="position:absolute;inset:0;background:radial-gradient(ellipse at 48% 61%, rgba(255,120,30,.35), rgba(0,0,0,.25) 40%, rgba(0,0,0,.85) 100%)"></div>
-      <div class="finale-feu" style="position:absolute;left:48%;top:61%;width:20%;aspect-ratio:1.6/1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse, #fff4c8 0, #ffb347 25%, #e2541a 50%, rgba(160,30,0,0) 72%);filter:blur(4px);animation:pouls 1.1s infinite"></div>
+      <div class="finale-feu" style="position:absolute;left:48%;top:61%;width:20%;aspect-ratio:1.6/1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse, rgba(255,244,200,.55) 0, rgba(255,179,71,.35) 30%, rgba(226,84,26,.15) 55%, rgba(160,30,0,0) 72%);mix-blend-mode:screen;filter:blur(8px);animation:flamme 1.6s infinite alternate"></div>
       <p class="finale-texte" style="position:absolute;top:7%;left:50%;transform:translateX(-50%);width:min(760px,90%);text-align:center;font-family:var(--titre);font-size:1.35rem;line-height:1.6;color:#f3e2c2;text-shadow:0 2px 12px #000">${ctx.noms(J.finale.texteAvant)}<br><span style="font-style:italic;color:#c9b38e;font-size:1.05rem">Faites glisser l'anneau jusqu'au feu, et ne le lâchez pas.</span></p>
       <div class="finale-anneau" style="position:absolute;width:64px;height:64px;left:14%;top:78%;transform:translate(-50%,-50%);border-radius:50%;border:9px solid #d8b154;box-shadow:0 0 18px rgba(255,200,90,.6), inset 0 0 6px rgba(0,0,0,.5);cursor:grab"></div>
       <div class="finale-murmure" style="position:absolute;font-family:var(--titre);font-style:italic;color:#c9cbd6;font-size:1.4rem;text-shadow:0 0 12px #000;pointer-events:none;opacity:0;transition:opacity 1s"></div>

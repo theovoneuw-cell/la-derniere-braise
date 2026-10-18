@@ -72,7 +72,7 @@
     if (!S || S.etape !== "jeu" || enPause || document.hidden || !$("#table").classList.contains("actif")) return;
     const avant = ombre();
     S.temps += dt;
-    if (S.anneau) { S.anneauMs += dt; while (S.anneauMs >= J.anneauSecondes * 1000) { S.anneauMs -= J.anneauSecondes * 1000; S.ombreAutres++; } }
+    if (S.anneau) { S.anneauPorte = (S.anneauPorte || 0) + dt; if (S.anneauPorte > (J.anneauGrace || 0) * 1000) { S.anneauMs += dt; while (S.anneauMs >= J.anneauSecondes * 1000) { S.anneauMs -= J.anneauSecondes * 1000; S.ombreAutres++; } } }
     if (S.tambours) { S.tambourMs += dt; while (S.tambourMs >= J.tambourSecondes * 1000) { S.tambourMs -= J.tambourSecondes * 1000; S.ombreAutres++; } }
     if (ombre() !== avant) majOmbre();
     if (Math.random() < .002 && ombre() > 12 && !S.anneau) Son.son("murmures", { gain: .25 });
@@ -92,7 +92,7 @@
       if (e.texte) billet(e.texte);
       if (e.tambours === false) arreterTambours();
       if (e.sommeil) sommeil();
-      if (e.regleAnneau) billet(`<p>L'anneau est à vous, désormais.</p><p>Un bouton est apparu en bas de l'écran : <b>Passer l'anneau</b>. Tant qu'il est à votre doigt, vous voyez ce qui se cache aux yeux des vivants, et certaines cartes changent.</p><p>Mais quelque chose, loin à l'Est, vous voit aussi. Tant que vous le portez, <b>l'Ombre avance très vite</b>. Ôtez-le dès que vous avez vu ce qu'il fallait voir.</p>`);
+      if (e.regleAnneau) billet(`<p>L'anneau est à vous, désormais.</p><p>Un bouton est apparu en bas de l'écran : <b>Passer l'anneau</b>. Tant qu'il est à votre doigt, vous voyez ce qui se cache aux yeux des vivants, et certaines cartes changent.</p><p>Mais quelque chose, loin à l'Est, vous voit aussi. Les premiers instants sont sans danger ; ensuite, tant que vous le portez, <b>l'Ombre avance vite</b>. Ôtez-le dès que vous avez vu ce qu'il fallait voir.</p>`);
       if (e.finale) quandBilletsFinis(() => { fermerCarte(); finale(); });
     });
     rendu(); sauver();
@@ -310,7 +310,7 @@
     const d = J.dedale, salle = d.salles[id];
     Son.son("pas", { gain: .6 });
     if (d.grille && S.dedale.salle === d.grille.de && arche === d.grille.rune && !S.flags.grille) {
-      if (!enMain(d.grille.carte)) { Son.son("grille-fermee"); toast("Une grille de fer noir ferme cette arche. Au centre, une serrure en forme d'enclume.", 4200); return; }
+      if (!enMain(d.grille.carte)) { Son.son("grille-fermee"); toast("Une grille de fer noir ferme cette arche. Au centre, une serrure faite pour une longue clé.", 4200); return; }
       S.flags.grille = true; Son.son("serrure-lourde"); billet("La clé noire entre dans la serrure de la grille. Elle tourne avec un grincement qui doit s'entendre jusqu'au fond de la montagne. La grille s'ouvre.");
     }
     S.dedale.prec = S.dedale.salle; S.dedale.salle = id;
@@ -434,7 +434,7 @@
   function basculerAnneau(v) {
     const nv = v != null ? v : !S.anneau;
     if (nv === S.anneau) return;
-    S.anneau = nv; document.body.classList.toggle("anneau", nv); Son.anneau(nv);
+    S.anneau = nv; document.body.classList.toggle("anneau", nv); Son.anneau(nv); if (nv) { S.anneauPorte = 0; S.anneauMs = 0; }
     if (nv) {
       Son.son("anneau-on");
       if (chap().anneauInterdit && !S.flags.avertiVallee) { S.flags.avertiVallee = true; ajouterOmbre(2); billet("À l'instant où l'anneau glisse à votre doigt, le chant s'arrête net. Toute la vallée se tait, jusqu'à la cascade, semble-t-il. Une voix, tout près, très calme : « Ôtez cela. Ici, on le voit comme une tache d'encre sur la neige. Et d'autres que nous regardent la neige. »"); }
