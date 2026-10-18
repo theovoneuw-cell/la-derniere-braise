@@ -247,7 +247,8 @@ svg.rune { width: 13px; height: 26px; }
 .plateau-fermer { margin-top: 10px; }
 
 /* ——— Fin */
-#fin { background: radial-gradient(ellipse at 50% 30%, #2a1d13, #0b0806 70%); overflow: auto; }
+#fin { background: linear-gradient(rgba(10, 7, 4, .78), rgba(10, 7, 4, .92)), url(../img/fin.jpg) center / cover, #0b0806; overflow: auto; }
+#fin.garde { background: linear-gradient(rgba(6, 4, 8, .85), rgba(6, 4, 8, .95)), url(../img/s-couche.jpg) center / cover, #060408; }
 #fin.actif { display: flex; justify-content: center; }
 .fin-boite { width: min(720px, 100%); padding: 9vh 24px 60px; text-align: center; }
 .fin-sur { font-family: var(--titre); font-style: italic; color: var(--texte-doux); }

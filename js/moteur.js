@@ -150,6 +150,7 @@
   // ——— Cinématiques
   function cinematique(id, opts = {}) {
     const c = id && J.cines[id] ? J.cines[id] : { pages: opts.pages, musique: opts.musique };
+    if (!opts.image && c.image) opts.image = c.image;
     return new Promise(fin => {
       ecran("cine");
       const fond = $(".cine-fond"), txt = $("#cine-texte"), suite = $("#cine-suite");
@@ -480,12 +481,12 @@
   }
   async function fin(garde) {
     S.etape = "fin"; S.garde = garde; sauver();
-    await cinematique(garde ? "garder" : "reussite", { pages: garde ? J.finale.garder : J.finale.reussite, musique: garde ? "mus-ombre" : "mus-fin" });
+    await cinematique(garde ? "garder" : "reussite", { pages: garde ? J.finale.garder : J.finale.reussite, musique: garde ? "mus-ombre" : "mus-fin", image: garde ? "s-couche" : "fin" });
     ecranFin();
   }
   function ecranFin() {
     const o = ombre();
-    ecran("fin");
+    ecran("fin"); $("#fin").classList.toggle("garde", !!S.garde);
     let titre, texte;
     if (S.garde) { titre = "L'anneau a choisi"; texte = J.finale.garder[J.finale.garder.length - 1]; }
     else { const f = J.finale.fins.find(x => o <= x.max); titre = f.titre; texte = f.texte; setTimeout(() => Son.voix(`fin-${J.finale.fins.indexOf(f) + 1}`), 1500); }
